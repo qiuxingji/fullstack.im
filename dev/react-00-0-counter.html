@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter using React</title>
+    <description>Counter using React, to be compared with vanilla JS.</description>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .counter {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .count-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2196F3;
+            margin: 20px 0;
+        }
+        button {
+            font-size: 18px;
+            padding: 12px 24px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .increment { background-color: #4CAF50; color: white; }
+        .reset { background-color: #FF9800; color: white; }
+        button:hover { opacity: 0.8; }
+        .explanation {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e3f2fd;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function Counter() {
+            // useState hook 管理计数器的状态
+            const [count, setCount] = useState(0);
+            
+            // 事件处理函数
+            const increment = () => setCount(count + 1);
+            const reset = () => setCount(0);
+
+            return (
+                <div className="container">
+                    <h1>React useState Hook 示例</h1>
+                    
+                    <div className="counter">
+                        <div className="count-display">{count}</div>
+                        <button className="increment" onClick={increment}>
+                            增加 (+1)
+                        </button>
+                        <button className="reset" onClick={reset}>
+                            重置
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Counter />);
+    </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter using vanilla JS</title>
+    <description>Counter using vanilla JS, to be compared with React.</description>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .counter {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .count-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2196F3;
+            margin: 20px 0;
+        }
+        button {
+            font-size: 18px;
+            padding: 12px 24px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .increment { background-color: #4CAF50; color: white; }
+        .reset { background-color: #FF9800; color: white; }
+        button:hover { opacity: 0.8; }
+        .explanation {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff3e0;
+            border-radius: 5px;
+            border-left: 4px solid #FF9800;
+        }
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Vanilla JavaScript 计数器示例</h1>
+        
+        <div class="counter">
+            <div id="countDisplay" class="count-display">0</div>
+            <button class="increment" id="incrementBtn">
+                增加 (+1)
+            </button>
+            <button class="reset" id="resetBtn">
+                重置
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 手动管理状态
+        let count = 0;
+        
+        // 获取 DOM 元素
+        const countDisplay = document.getElementById('countDisplay');
+        const incrementBtn = document.getElementById('incrementBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        // 手动更新 DOM 的函数
+        function updateDisplay() {
+            countDisplay.textContent = count;
+        }
+        
+        // 事件处理函数
+        function increment() {
+            count++;
+            updateDisplay(); // 必须记住调用更新函数
+        }
+        
+        function reset() {
+            count = 0;
+            updateDisplay(); // 必须记住调用更新函数
+        }
+        
+        // 手动添加事件监听器
+        incrementBtn.addEventListener('click', increment);
+        resetBtn.addEventListener('click', reset);
+        
+        // 初始化显示
+        updateDisplay();
+    </script>
+</body>
+</html>
