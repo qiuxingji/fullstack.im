@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrome Extension Manifest V3 Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 30px 20px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .section.left {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .section.right {
+            flex: 2;
+            margin-bottom: 0;
+        }
+
+        /* For single sections without left/right classes */
+        .section:not(.left):not(.right) {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .divider {
+            height: 1px;
+            background: #ccc;
+            margin: 40px 0;
+        }
+
+        .code-snippet {
+            background: #2d3748;
+            color: #81c784;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            word-break: break-all;
+            overflow-x: auto;
+        }
+
+        .log-info { color: #4fc3f7; }
+        .log-success { color: #81c784; }
+        .log-warning { color: #ffb74d; }
+        .log-error { color: #e57373; }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .main-content {
+                padding: 20px 15px;
+            }
+            
+            .section-container {
+                flex-direction: column;
+            }
+            
+            .section.left,
+            .section.right {
+                flex: 1;
+                margin-bottom: 20px;
+            }
+        }
+
+        /* 防止内容溢出 */
+        .code-snippet, .log-entry {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+
+        /* 隐藏滚动条但保持功能 */
+        .log-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .log-area::-webkit-scrollbar-track {
+            background: #2d2d2d;
+        }
+
+        .log-area::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 3px;
+        }
+
+        .log-area::-webkit-scrollbar-thumb:hover {
+            background: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Chrome Extension Manifest V3</h1>
+            <p>Mole game extension explained</p>
+        </div>
+
+        <div class="main-content">
+            <div class="section-container">
+                <div class="section left">
+                    <div class="log-info">
+
+                    </div>
+                    <h3>mole/</h3>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+mole/
+├── icon-empty.png
+├── icon-mole.png
+├── manifest.json
+├── service-worker.js
+                            </code>
+                        </pre>
+                    </div>
+
+                <h3>mole/manifest.json</h3>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+{
+    "name": "mole",
+    "version": "1.0",
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "service-worker.js"
+    },
+    "action": {
+        "default_icon": "icon-empty.png"
+    },
+    "permissions": ["management", "tabs"]
+}
+                       </code>
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section right">
+                <h3>mole/service-worker.js</h3>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+let failTimeout;
+let moleShowing = false;
+let controllerId;
+
+chrome.action.onClicked.addListener(() => {
+  if (!moleShowing) return;
+
+  chrome.runtime.sendMessage(controllerId, 'success');
+  hideMole();
+
+  failTimeout && clearTimeout(failTimeout);
+  failTimeout = undefined;
+});
+
+function showMole() {
+  chrome.action.setIcon({ path: 'icon-mole.png' });
+  moleShowing = true;
+}
+
+function hideMole() {
+  chrome.action.setIcon({ path: 'icon-empty.png' });
+  moleShowing = false;
+}
+
+chrome.runtime.onMessageExternal.addListener((msg) => {
+  controllerId = msg.id;
+  showMole();
+  failTimeout = setTimeout(async () => {
+    hideMole();
+    const tabs = await chrome.tabs.query({})
+    if (tabs.length > 0) {
+    //   const tabToClose = Math.floor(Math.random() * tabs.length);
+    //   chrome.tabs.remove(tabs[tabToClose].id);
+    }
+  }, 2000);
+});
+                    </code>
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-container">
+        <div class="section left">
+            <div class="logarea">
+            </div>
+            <h3>mole_controller/</h3>
+            <div class="log-warning">
+                Note how only `manifest.json` is required for an extension.
+            </div>
+            <div class="code-snippet">
+                <pre>
+                    <code>
+mole_controller/
+├── manifest.json
+├── service-worker.js
+
+                    </code>
+                </pre>
+            </div>
+            <h3>mole_controller/manifest.json</h3>
+            <div class="log-warning">
+                `action` can be omitted, although there WILL be errors in console.
+            </div>
+            <div class="code-snippet">
+                <pre>
+                    <code>
+{
+    "name": "mole controller",
+    "version": "1.0",
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "service-worker.js"
+    },
+    "permissions": ["management", "alarms"],
+    "action": {}
+}                        
+                    </code>
+                </pre>
+            </div>
+        </div>
+        <div class="section right">
+            <h3>mole_controller/service-worker.js</h3>
+            <div class="code-snippet">
+                <pre>
+                    <code>
+chrome.runtime.onInstalled.addListener(() => {
+    // Despite the 30-sec-minimum requirement in doc, 
+    // we can set it to be smaller, here 3-sec (and NOT only for testing);
+    // Prone to be changed in future
+    chrome.alarms.create({ periodInMinutes: (1 / 60) * 3 });
+});
+
+chrome.alarms.onAlarm.addListener(async () => {
+    const extensions = await chrome.management.getAll();
+    const moles = extensions.filter((e) => e.name === 'mole');
+    const randomIndex = Math.floor(Math.random() * moles.length);
+
+    chrome.runtime.sendMessage(moles[randomIndex].id, { id: chrome.runtime.id });
+});
+
+let counter = 0;
+
+chrome.runtime.onMessageExternal.addListener(() => {
+    counter++;
+    chrome.action.setBadgeText({ text: `${counter}` });
+});
+                    </code>
+                </pre>
+            </div>
+
+        </div>
+
+    </div>
+        
+    </div>
+
+</body>
+</html>
